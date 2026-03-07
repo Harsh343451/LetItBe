@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>LetItBe | Vehicle Assistance Platform</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- If you are using compiled Tailwind -->
+  <link rel="stylesheet" href="/output.css">
+
+  <!-- OR if you want CDN (comment above and use this) -->
+  <!-- <script src="https://cdn.tailwindcss.com"></script> -->
+</head>
+
+<body class="bg-gray-100 text-gray-800">
+
+  <!-- Navbar -->
+  <nav class="bg-white shadow">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+      <h1 class="text-2xl font-bold text-blue-600">LetItBe</h1>
+      <div class="space-x-4">
+        <a href="/login.ejs" class="text-gray-600 hover:text-blue-600">Login</a>
+        <a href="/signup.ejs"
+           class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+          Get Started
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="bg-blue-600 text-white">
+    <div class="max-w-7xl mx-auto px-6 py-20 text-center">
+      <h2 class="text-4xl md:text-5xl font-bold mb-6">
+        Vehicle Breakdown? We’ve Got You Covered.
+      </h2>
+      <p class="text-lg md:text-xl mb-8">
+        Get instant help from nearby automobile service centers.
+        Home service or roadside assistance — anytime, anywhere.
+      </p>
+      <a href="/request.html"
+         class="bg-white text-blue-600 font-semibold px-8 py-3 rounded-lg hover:bg-gray-100">
+        Request Service Now
+      </a>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section class="max-w-7xl mx-auto px-6 py-16">
+    <h3 class="text-3xl font-bold text-center mb-12">Why Choose LetItBe?</h3>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div class="bg-white p-6 rounded-lg shadow text-center">
+        <h4 class="text-xl font-semibold mb-3">📍 Location Based Help</h4>
+        <p class="text-gray-600">
+          Find the nearest automobile service center using live location.
+        </p>
+      </div>
+
+      <div class="bg-white p-6 rounded-lg shadow text-center">
+        <h4 class="text-xl font-semibold mb-3">🚗 Roadside Assistance</h4>
+        <p class="text-gray-600">
+          Stuck on the road? Raise an emergency request instantly.
+        </p>
+      </div>
+
+      <div class="bg-white p-6 rounded-lg shadow text-center">
+        <h4 class="text-xl font-semibold mb-3">🏠 Home Servicing</h4>
+        <p class="text-gray-600">
+          Schedule vehicle service at your home with pickup & drop.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Call to Action -->
+  <section class="bg-white py-16">
+    <div class="max-w-4xl mx-auto text-center px-6">
+      <h3 class="text-3xl font-bold mb-4">
+        Ready to experience hassle-free vehicle service?
+      </h3>
+      <p class="text-gray-600 mb-6">
+        Join LetItBe and connect with trusted automobile experts near you.
+      </p>
+      <a href="/register.html"
+         class="bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700">
+        Create Free Account
+      </a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-gray-800 text-gray-300">
+    <div class="max-w-7xl mx-auto px-6 py-6 text-center">
+      <p>© 2026 LetItBe. All rights reserved.</p>
+    </div>
+  </footer>
+
+</body>
+</html>
