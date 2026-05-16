@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Shop - LetItBe</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50">
+    <%- include('./partials/navbar') %>
+
+    <main class="max-w-4xl mx-auto px-6 py-12">
+        <!-- Header -->
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-800 mb-2">Add Your Shop</h1>
+            <p class="text-gray-600">Register your automobile service shop to start helping customers.</p>
+        </div>
+
+        <!-- Form Card -->
+        <div class="bg-white rounded-lg shadow p-8">
+            <% if (errorMessage) { %>
+                <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-6">
+                    <%= errorMessage %>
+                </div>
+            <% } %>
+
+            <form action="/add-shop" method="POST" class="space-y-6">
+                <!-- Location Alert -->
+                <div id="locationAlert" class="hidden bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded mb-4" role="status" aria-live="polite"></div>
+
+                <!-- Hidden latitude/longitude inputs -->
+                <input type="hidden" id="latitude" name="latitude" value="<%= oldInput.latitude || '' %>">
+                <input type="hidden" id="longitude" name="longitude" value="<%= oldInput.longitude || '' %>">
+                <!-- Shop Name -->
+                <div>
+                    <label for="shopName" class="block text-sm font-medium text-gray-700 mb-2">
+                        Shop Name *
+                    </label>
+                    <input
+                        type="text"
+                        id="shopName"
+                        name="shopName"
+                        value="<%= oldInput.shopName || '' %>"
+                        required
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        placeholder="Enter your shop name"
+                    >
+                </div>
+
+                <!-- Owner Name -->
+                <div>
+                    <label for="ownerName" class="block text-sm font-medium text-gray-700 mb-2">
+                        Owner Name *
+                    </label>
+                    <input
+                        type="text"
+                        id="ownerName"
+                        name="ownerName"
+                        value="<%= oldInput.ownerName || '' %>"
+                        required
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        placeholder="Enter owner's full name"
+                    >
+                </div>
+
+                <!-- Contact Information Row -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Email -->
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-gray-700 mb-2">
+                            Email *
+                        </label>
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            value="<%= oldInput.email || '' %>"
+                            required
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            placeholder="shop@example.com"
+                        >
+                    </div>
+
+                    <!-- Phone -->
+                    <div>
+                        <label for="phone" class="block text-sm font-medium text-gray-700 mb-2">
+                            Phone Number *
+                        </label>
+                        <input
+                            type="tel"
+                            id="phone"
+                            name="phone"
+                            value="<%= oldInput.phone || '' %>"
+                            required
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            placeholder="+1 (555) 123-4567"
+                        >
+                    </div>
+                </div>
+
+                <!-- Address -->
+                <div>
+                    <label for="address" class="block text-sm font-medium text-gray-700 mb-2">
+                        Address *
+                    </label>
+                    <textarea
+                        id="address"
+                        name="address"
+                        rows="3"
+                        required
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        placeholder="Enter complete shop address"
+                    ><%= oldInput.address || '' %></textarea>
+                </div>
+
+                <!-- Services -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        Services Offered *
+                    </label>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
+                        <% const serviceOptions = [
+                            'Oil Change',
+                            'Tire Repair',
+                            'Brake Service',
+                            'Electrical Repair',
+                            'Engine Diagnostics',
+                            'Car Wash',
+                            'Battery Service'
+                        ]; %>
+                        <% serviceOptions.forEach(option => { %>
+                            <label class="flex items-center gap-3 px-3 py-2 border rounded-lg cursor-pointer hover:border-blue-500">
+                                <input
+                                    type="checkbox"
+                                    name="services"
+                                    value="<%= option %>"
+                                    class="form-checkbox h-4 w-4 text-blue-600"
+                                    <%= (Array.isArray(oldInput.services) ? oldInput.services.includes(option) : String(oldInput.services || '').split(',').map(s => s.trim()).includes(option)) ? 'checked' : '' %>
+                                >
+                                <span class="text-gray-700"><%= option %></span>
+                            </label>
+                        <% }) %>
+                    </div>
+                    <input
+                        type="text"
+                        id="services"
+                        name="services"
+                        value="<%= oldInput.services || '' %>"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        placeholder="Or type comma-separated services like Oil Change, Brake Repair"
+                    >
+                    <p class="text-sm text-gray-500 mt-1">Select from the list above or enter custom services.</p>
+                </div>
+
+                <!-- Opening Hours -->
+                <div>
+                    <label for="openingHours" class="block text-sm font-medium text-gray-700 mb-2">
+                        Opening Hours
+                    </label>
+                    <input
+                        type="text"
+                        id="openingHours"
+                        name="openingHours"
+                        value="<%= oldInput.openingHours || '' %>"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        placeholder="e.g. Mon-Fri 8:00 AM - 6:00 PM"
+                    >
+                </div>
+
+                <!-- Description -->
+                <div>
+                    <label for="description" class="block text-sm font-medium text-gray-700 mb-2">
+                        Description
+                    </label>
+                    <textarea
+                        id="description"
+                        name="description"
+                        rows="4"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        placeholder="Tell customers about your shop, experience, and specialties..."
+                    ><%= oldInput.description || '' %></textarea>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="flex flex-col sm:flex-row gap-4 pt-6">
+                    <button
+                        type="button"
+                        id="useLocationBtn"
+                        class="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition font-semibold flex-1 sm:flex-none"
+                    >
+                        Use Current Location
+                    </button>
+                    <button
+                        type="submit"
+                        class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition font-semibold flex-1 sm:flex-none"
+                    >
+                        Add Shop
+                    </button>
+                    <a
+                        href="/dashboard"
+                        class="bg-gray-200 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-300 transition font-semibold text-center"
+                    >
+                        Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+
+        <!-- Help Text -->
+        <div class="mt-8 bg-blue-50 border border-blue-200 rounded-lg p-6">
+            <h3 class="text-lg font-semibold text-blue-800 mb-2">Need Help?</h3>
+            <ul class="text-blue-700 space-y-1 text-sm">
+                <li>• <strong>Services:</strong> List all services you offer, separated by commas</li>
+                <li>• <strong>Address:</strong> Include street, city, state, and zip code</li>
+                <li>• <strong>Description:</strong> Highlight your experience and unique selling points</li>
+                <li>• <strong>Contact:</strong> Ensure email and phone are accurate for customer inquiries</li>
+            </ul>
+        </div>
+    </main>
+</body>
+<script>
+    (function() {
+        const useBtn = document.getElementById('useLocationBtn');
+        const latInput = document.getElementById('latitude');
+        const lngInput = document.getElementById('longitude');
+        const alertBox = document.getElementById('locationAlert');
+
+        function showAlert(message) {
+            alertBox.textContent = message;
+            alertBox.classList.remove('hidden');
+        }
+
+        function showError(message) {
+            alertBox.textContent = message;
+            alertBox.classList.remove('hidden');
+            alertBox.classList.remove('bg-green-50', 'border-green-200', 'text-green-700');
+            alertBox.classList.add('bg-red-50', 'border-red-200', 'text-red-700');
+        }
+
+        if (useBtn) {
+            useBtn.addEventListener('click', function () {
+                if (!navigator.geolocation) {
+                    showError('Geolocation is not supported by your browser.');
+                    return;
+                }
+
+                navigator.geolocation.getCurrentPosition(function (position) {
+                    const lat = position.coords.latitude;
+                    const lng = position.coords.longitude;
+
+                    if (latInput) latInput.value = lat;
+                    if (lngInput) lngInput.value = lng;
+
+                    showAlert('Location fetched successfully.');
+                }, function (err) {
+                    showError('Unable to retrieve your location.');
+                }, { enableHighAccuracy: true, timeout: 10000 });
+            });
+        }
+    })();
+</script>
+</html>

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nearby Shops - LetItBe</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50">
+    <%- include('./partials/navbar') %>
+
+    <main class="max-w-4xl mx-auto px-6 py-12">
+        <div class="mb-6">
+            <h1 class="text-2xl font-bold text-gray-800">Find Nearby Shops</h1>
+            <p class="text-gray-600">Allow location access to find shops near you.</p>
+        </div>
+
+        <div class="bg-white rounded-lg shadow p-6">
+            <div id="status" class="mb-4"></div>
+
+            <div class="flex gap-4">
+                <button id="findBtn" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Find Nearby Shops</button>
+                <button id="refreshBtn" class="bg-gray-200 text-gray-700 px-4 py-2 rounded hover:bg-gray-300">Clear</button>
+            </div>
+
+            <div id="results" class="mt-6"></div>
+        </div>
+    </main>
+
+<script>
+(function(){
+    const findBtn = document.getElementById('findBtn');
+    const refreshBtn = document.getElementById('refreshBtn');
+    const status = document.getElementById('status');
+    const results = document.getElementById('results');
+
+    function setStatus(message, type = 'info'){
+        status.textContent = message;
+        status.className = '';
+        if(type === 'info') status.classList.add('text-gray-700');
+        if(type === 'error') status.classList.add('text-red-600');
+        if(type === 'success') status.classList.add('text-green-600');
+    }
+
+    function clearResults(){
+        results.innerHTML = '';
+        setStatus('');
+    }
+
+    function renderShops(shops){
+        if(!shops || shops.length === 0){
+            results.innerHTML = '<p class="text-gray-600">No nearby shops found within 10km.</p>';
+            return;
+        }
+
+        const list = document.createElement('div');
+        list.className = 'space-y-4';
+
+        shops.forEach(shop => {
+            const km = (shop.distanceMeters / 1000).toFixed(2);
+            const card = document.createElement('div');
+            card.className = 'p-4 border rounded-lg bg-white';
+            card.innerHTML = `
+                <div class="flex justify-between items-start">
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-800">${shop.shopName}</h3>
+                        <p class="text-sm text-gray-600">${shop.address || ''}</p>
+                        <p class="text-sm text-gray-600 mt-1"><strong>Services:</strong> ${Array.isArray(shop.services) ? shop.services.join(', ') : (shop.services || '')}</p>
+                        <p class="text-sm text-gray-600 mt-1"><strong>Phone:</strong> ${shop.phone || 'N/A'}</p>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-sm text-gray-500">${km} km</p>
+                    </div>
+                </div>
+            `;
+            list.appendChild(card);
+        });
+
+        results.innerHTML = '';
+        results.appendChild(list);
+    }
+
+    findBtn.addEventListener('click', function(){
+        if(!navigator.geolocation){
+            setStatus('Geolocation not supported by your browser.', 'error');
+            return;
+        }
+
+        setStatus('Fetching your location...', 'info');
+
+        navigator.geolocation.getCurrentPosition(async (position) => {
+            const lat = position.coords.latitude;
+            const lng = position.coords.longitude;
+
+            setStatus('Searching for nearby shops...', 'info');
+
+            try{
+                const resp = await fetch('/nearby-shops', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ latitude: lat, longitude: lng })
+                });
+
+                if(!resp.ok){
+                    const err = await resp.json();
+                    setStatus(err.error || 'Server error', 'error');
+                    return;
+                }
+
+                const data = await resp.json();
+                setStatus(`Found ${data.shops.length} shops within 10km.`, 'success');
+                renderShops(data.shops);
+            } catch (e) {
+                console.error(e);
+                setStatus('Failed to fetch nearby shops.', 'error');
+            }
+
+        }, (err) => {
+            console.error(err);
+            setStatus('Unable to retrieve your location.', 'error');
+        }, { enableHighAccuracy: true, timeout: 10000 });
+    });
+
+    refreshBtn.addEventListener('click', function(){
+        clearResults();
+    });
+})();
+</script>
+</body>
+</html>
